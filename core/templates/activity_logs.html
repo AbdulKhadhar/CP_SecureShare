@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Activity Logs - SecureShare{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-history"></i> Activity Logs</h2>
+
+<div class="card">
+    <div class="card-body">
+        {% if page_obj %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Activity</th>
+                        <th>File</th>
+                        <th>IP Address</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in page_obj %}
+                    <tr>
+                        <td>{{ log.timestamp|date:"M d, Y H:i:s" }}</td>
+                        <td>
+                            <span class="badge badge-custom bg-info">
+                                {{ log.get_activity_type_display }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if log.file %}
+                            {{ log.file.original_filename }}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>{{ log.ip_address|default:"-" }}</td>
+                        <td>{{ log.details|default:"-" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+                
+                <li class="page-item active">
+                    <span class="page-link">{{ page_obj.number }}</span>
+                </li>
+                
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        {% else %}
+        <p class="text-muted text-center py-5">No activity logs found</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,124 @@
+<!-- core/templates/link_details.html -->
+{% extends 'base.html' %}
+
+{% block title %}Link Details - SecureShare{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h4 class="mb-4"><i class="fas fa-link"></i> Link Details</h4>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">File</label>
+                    <p>{{ link.file.original_filename }} ({{ link.file.file_size|filesizeformat }})</p>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Shareable Link</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="shareLink" value="{{ full_url }}" readonly>
+                        <button class="btn btn-primary" onclick="copyLink()">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Created</label>
+                        <p>{{ link.created_at|date:"M d, Y H:i" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Expires</label>
+                        <p>{{ link.expires_at|date:"M d, Y H:i" }}</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Downloads</label>
+                        <p>{{ link.download_count }} / {{ link.max_downloads }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Status</label>
+                        <p>
+                            {% if link.is_expired %}
+                            <span class="badge bg-danger">Expired</span>
+                            {% elif link.is_active %}
+                            <span class="badge bg-success">Active</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                
+                {% if link.password_protected %}
+                <div class="alert alert-info">
+                    <i class="fas fa-lock"></i> This link is password protected
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-history"></i> Download History</h5>
+            </div>
+            <div class="card-body">
+                {% if download_logs %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>IP Address</th>
+                                <th>User Agent</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in download_logs %}
+                            <tr>
+                                <td>{{ log.timestamp|date:"M d, Y H:i" }}</td>
+                                <td>{{ log.ip_address }}</td>
+                                <td>{{ log.user_agent|truncatewords:10 }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3">No downloads yet</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="mb-3">Quick Actions</h5>
+                <a href="{% url 'my_links' %}" class="btn btn-outline-primary w-100 mb-2">
+                    <i class="fas fa-arrow-left"></i> Back to Links
+                </a>
+                {% if link.is_active and not link.is_expired %}
+                <a href="{% url 'deactivate_link' link.id %}" class="btn btn-warning w-100">
+                    <i class="fas fa-ban"></i> Deactivate Link
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyLink() {
+    const linkInput = document.getElementById('shareLink');
+    linkInput.select();
+    document.execCommand('copy');
+    alert('Link copied to clipboard!');
+}
+</script>
+{% endblock %}

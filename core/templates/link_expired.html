@@ -1,0 +1,19 @@
+<!-- core/templates/link_expired.html -->
+{% extends 'base.html' %}
+
+{% block title %}Link Expired - SecureShare{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-lg text-center">
+            <div class="card-body p-5">
+                <i class="fas fa-clock fa-4x text-warning mb-4"></i>
+                <h3 class="mb-3">Link Expired</h3>
+                <p class="text-muted">This download link has expired or reached its maximum number of downloads.</p>
+                <p>Please contact the file owner for a new link.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

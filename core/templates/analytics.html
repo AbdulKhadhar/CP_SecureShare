@@ -1,0 +1,119 @@
+<!-- core/templates/analytics.html -->
+{% extends 'base.html' %}
+
+{% block title %}Analytics - SecureShare{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-chart-line"></i> Analytics & Reports</h2>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Upload Trends (Last 30 Days)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="uploadsChart" height="80"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Download Trends (Last 30 Days)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="downloadsChart" height="80"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Most Downloaded Files</h5>
+            </div>
+            <div class="card-body">
+                {% if most_downloaded %}
+                <ul class="list-group list-group-flush">
+                    {% for item in most_downloaded %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ item.file__original_filename }}
+                        <span class="badge bg-primary rounded-pill">{{ item.count }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted text-center py-4">No data available</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script>
+// Uploads Chart
+const uploadsData = {{ uploads_by_day|safe }};
+const uploadsLabels = uploadsData.map(d => d.day);
+const uploadsCounts = uploadsData.map(d => d.count);
+
+new Chart(document.getElementById('uploadsChart'), {
+    type: 'line',
+    data: {
+        labels: uploadsLabels,
+        datasets: [{
+            label: 'Uploads',
+            data: uploadsCounts,
+            borderColor: '#4F46E5',
+            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+
+// Downloads Chart
+const downloadsData = {{ downloads_by_day|safe }};
+const downloadsLabels = downloadsData.map(d => d.day);
+const downloadsCounts = downloadsData.map(d => d.count);
+
+new Chart(document.getElementById('downloadsChart'), {
+    type: 'line',
+    data: {
+        labels: downloadsLabels,
+        datasets: [{
+            label: 'Downloads',
+            data: downloadsCounts,
+            borderColor: '#10B981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

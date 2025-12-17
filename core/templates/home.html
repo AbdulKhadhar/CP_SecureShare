@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row align-items-center min-vh-70">
+    <div class="col-lg-6">
+        <h1 class="display-3 fw-bold mb-4">Secure File Sharing Made Simple</h1>
+        <p class="lead mb-4">
+            Share files with confidence using military-grade AES-256 encryption. 
+            Generate time-limited links, track downloads, and maintain complete control over your data.
+        </p>
+        <div class="d-flex gap-3">
+            <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-rocket"></i> Get Started
+            </a>
+            <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <img src="https://via.placeholder.com/600x400/4F46E5/FFFFFF?text=Secure+File+Sharing" class="img-fluid rounded shadow-lg" alt="SecureShare">
+    </div>
+</div>
+
+<div class="row mt-5 g-4">
+    <div class="col-md-4">
+        <div class="card h-100 text-center p-4">
+            <div class="card-body">
+                <i class="fas fa-lock fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">End-to-End Encryption</h5>
+                <p class="card-text">All files are encrypted with AES-256 before storage, ensuring maximum security.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 text-center p-4">
+            <div class="card-body">
+                <i class="fas fa-clock fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Time-Limited Links</h5>
+                <p class="card-text">Create shareable links that expire automatically after a set time period.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 text-center p-4">
+            <div class="card-body">
+                <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Activity Tracking</h5>
+                <p class="card-text">Monitor all file uploads, downloads, and access attempts in real-time.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - SecureShare{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-cog"></i> Admin Dashboard</h2>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-1">Total Users</h6>
+                    <h2 class="mb-0">{{ total_users }}</h2>
+                </div>
+                <i class="fas fa-users"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card" style="background: linear-gradient(135deg, #F093FB 0%, #F5576C 100%);">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-1">Total Files</h6>
+                    <h2 class="mb-0">{{ total_files }}</h2>
+                </div>
+                <i class="fas fa-file"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card" style="background: linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%);">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-1">Storage Used</h6>
+                    <h2 class="mb-0">{{ total_storage|filesizeformat }}</h2>
+                </div>
+                <i class="fas fa-database"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header bg-white">
+        <h5 class="mb-0">Recent System Activities</h5>
+    </div>
+    <div class="card-body">
+        {% if recent_activities %}
+        <div class="table-responsive">
+            <table class="table table-hover table-sm">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>User</th>
+                        <th>Activity</th>
+                        <th>IP Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for activity in recent_activities %}
+                    <tr>
+                        <td>{{ activity.timestamp|date:"M d, H:i" }}</td>
+                        <td>{{ activity.user.username|default:"Anonymous" }}</td>
+                        <td>{{ activity.get_activity_type_display }}</td>
+                        <td>{{ activity.ip_address|default:"-" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted text-center py-4">No recent activities</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

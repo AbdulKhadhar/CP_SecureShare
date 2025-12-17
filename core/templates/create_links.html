@@ -1,0 +1,68 @@
+<!-- core/templates/create_link.html -->
+{% extends 'base.html' %}
+
+{% block title %}Create Shareable Link{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-lg">
+            <div class="card-body p-5">
+                <h3 class="mb-4"><i class="fas fa-link"></i> Create Shareable Link</h3>
+                
+                <div class="alert alert-info mb-4">
+                    <strong>File:</strong> {{ file.original_filename }}<br>
+                    <strong>Size:</strong> {{ file.file_size|filesizeformat }}
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_expiry_hours" class="form-label">Link Expiry (hours)</label>
+                        {{ form.expiry_hours }}
+                        <div class="form-text">Link will expire after this many hours</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_max_downloads" class="form-label">Maximum Downloads</label>
+                        {{ form.max_downloads }}
+                        <div class="form-text">Link will expire after this many downloads</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            {{ form.password_protected }}
+                            <label class="form-check-label" for="id_password_protected">
+                                Password protect this link
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3" id="passwordField" style="display: none;">
+                        <label for="id_access_password" class="form-label">Access Password</label>
+                        {{ form.access_password }}
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="allowed_emails" class="form-label">Restrict Access (Optional)</label>
+                        <textarea class="form-control" id="allowed_emails" name="allowed_emails" rows="3" 
+                                  placeholder="Enter email addresses separated by commas"></textarea>
+                        <div class="form-text">Only these email addresses will be able to access the file</div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-check"></i> Generate Link
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('id_password_protected').addEventListener('change', function() {
+    document.getElementById('passwordField').style.display = this.checked ? 'block' : 'none';
+});
+</script>
+{% endblock %}
