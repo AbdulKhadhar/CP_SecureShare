@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - SecureShare{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+
+<!-- Statistics Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-1">Total Files</h6>
+                    <h2 class="mb-0">{{ total_files }}</h2>
+                </div>
+                <i class="fas fa-file"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="background: linear-gradient(135deg, #F093FB 0%, #F5576C 100%);">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-1">Active Links</h6>
+                    <h2 class="mb-0">{{ total_links }}</h2>
+                </div>
+                <i class="fas fa-link"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="background: linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%);">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-1">Total Downloads</h6>
+                    <h2 class="mb-0">{{ total_downloads }}</h2>
+                </div>
+                <i class="fas fa-download"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card" style="background: linear-gradient(135deg, #FA709A 0%, #FEE140 100%);">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-1">Storage Used</h6>
+                    <h2 class="mb-0">{{ storage_percentage|floatformat:0 }}%</h2>
+                </div>
+                <i class="fas fa-hdd"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Storage Usage -->
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title"><i class="fas fa-database"></i> Storage Usage</h5>
+        <div class="progress mb-2">
+            <div class="progress-bar" role="progressbar" style="width: {{ storage_percentage }}%">
+                {{ storage_percentage|floatformat:1 }}%
+            </div>
+        </div>
+        <small class="text-muted">
+            {{ storage_used|filesizeformat }} of {{ storage_limit|filesizeformat }} used
+        </small>
+    </div>
+</div>
+
+<!-- Recent Files -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-folder-open"></i> Recent Files</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_files %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Filename</th>
+                                <th>Size</th>
+                                <th>Uploaded</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in recent_files %}
+                            <tr>
+                                <td><i class="fas fa-file"></i> {{ file.original_filename }}</td>
+                                <td>{{ file.file_size|filesizeformat }}</td>
+                                <td>{{ file.uploaded_at|timesince }} ago</td>
+                                <td>
+                                    <a href="{% url 'create_link' file.id %}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-share"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-4">No files uploaded yet</p>
+                {% endif %}
+                <a href="{% url 'my_files' %}" class="btn btn-outline-primary btn-sm">View All Files</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Activity -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="fas fa-history"></i> Recent Activity</h5>
+            </div>
+            <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                {% if recent_activities %}
+                {% for activity in recent_activities %}
+                <div class="d-flex align-items-start mb-3 pb-3 border-bottom">
+                    <div class="flex-grow-1">
+                        <small class="text-muted">{{ activity.timestamp|timesince }} ago</small>
+                        <p class="mb-0">{{ activity.get_activity_type_display }}</p>
+                        {% if activity.details %}
+                        <small class="text-muted">{{ activity.details }}</small>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="text-muted text-center py-4">No recent activity</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="mb-3">Quick Actions</h5>
+                <a href="{% url 'upload_file' %}" class="btn btn-primary me-2">
+                    <i class="fas fa-upload"></i> Upload File
+                </a>
+                <a href="{% url 'my_links' %}" class="btn btn-outline-primary me-2">
+                    <i class="fas fa-link"></i> Manage Links
+                </a>
+                <a href="{% url 'analytics' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-chart-bar"></i> View Analytics
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
